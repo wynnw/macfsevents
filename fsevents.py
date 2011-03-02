@@ -1,4 +1,5 @@
 import os
+import sys
 import threading
 import _fsevents
 
@@ -9,6 +10,13 @@ IN_CREATE = 0x00000100
 IN_DELETE = 0x00000200
 IN_MOVED_FROM = 0x00000040
 IN_MOVED_TO = 0x00000080
+
+
+# create constants for the fsevent flags
+_module = sys.modules[__name__]
+for name, value in _fsevents.EVENT_FLAGS.iteritems():
+    setattr(_module, 'FSEVENT_FLAG_' + name, value)
+
 
 class Observer(threading.Thread):
     event = None

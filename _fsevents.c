@@ -37,7 +37,7 @@ static void handler(FSEventStreamRef stream,
     PyObject *eventPathList = PyList_New(numEvents);
     PyObject *eventMaskList = PyList_New(numEvents);
     if ((!eventPathList) || (!eventMaskList))
-        return NULL;
+        return;
 
     int i;
     for (i = 0; i < numEvents; i++) {
@@ -46,7 +46,7 @@ static void handler(FSEventStreamRef stream,
         if ((!num) || (!str)) {
             Py_DECREF(eventPathList);
             Py_DECREF(eventMaskList);
-            return NULL;
+            return;
         }
         PyList_SET_ITEM(eventPathList, i, str);
         PyList_SET_ITEM(eventMaskList, i, num);
@@ -223,6 +223,19 @@ PyMODINIT_FUNC init_fsevents(void) {
     PyObject* mod = Py_InitModule3("_fsevents", methods, doc);
     PyModule_AddIntConstant(mod, "POLLIN", kCFFileDescriptorReadCallBack);
     PyModule_AddIntConstant(mod, "POLLOUT", kCFFileDescriptorWriteCallBack);
+
+    PyObject* event_flags = PyDict_New();
+    PyDict_SetItemString(event_flags, "NONE", PyInt_FromLong(kFSEventStreamEventFlagNone));
+    PyDict_SetItemString(event_flags, "MUST_SCAN_SUBDIRS", PyInt_FromLong(kFSEventStreamEventFlagMustScanSubDirs));
+    PyDict_SetItemString(event_flags, "USER_DROPPED", PyInt_FromLong(kFSEventStreamEventFlagUserDropped));
+    PyDict_SetItemString(event_flags, "KERNEL_DROPPED", PyInt_FromLong(kFSEventStreamEventFlagKernelDropped));
+    PyDict_SetItemString(event_flags, "EVENT_IDS_WRAPPED", PyInt_FromLong(kFSEventStreamEventFlagEventIdsWrapped));
+    PyDict_SetItemString(event_flags, "HISTORY_DONE", PyInt_FromLong(kFSEventStreamEventFlagHistoryDone));
+    PyDict_SetItemString(event_flags, "ROOT_CHANGED", PyInt_FromLong(kFSEventStreamEventFlagRootChanged));
+    PyDict_SetItemString(event_flags, "MOUNT", PyInt_FromLong(kFSEventStreamEventFlagMount));
+    PyDict_SetItemString(event_flags, "UNMOUNT", PyInt_FromLong(kFSEventStreamEventFlagUnmount));
+    
+    PyModule_AddObject(mod, "EVENT_FLAGS", event_flags);
 
     loops = PyDict_New();
     streams = PyDict_New();
