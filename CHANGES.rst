@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.3.0 (2011-3-02)
+------------------
+
+- Added module constants for the FSEvents event flags. These are built from the header file,
+  so there is no duplication of the values from FSEvents.h
+  [wynnw]
+
 0.2.4 (2010-12-06)
 ------------------
 
